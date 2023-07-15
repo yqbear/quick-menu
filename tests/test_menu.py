@@ -8,10 +8,13 @@ from quick_menu.menu import Menu, MenuItem
 
 @pytest.fixture
 def simple_menu():
-    menu = Menu("Simple Menu", menu_items=[
-        MenuItem("1", "Item 1"),
-        MenuItem("X", "Exit", is_exit=True),
-    ])
+    menu = Menu(
+        "Simple Menu",
+        menu_items=[
+            MenuItem("1", "Item 1"),
+            MenuItem("X", "Exit", is_exit=True),
+        ],
+    )
     return menu
 
 
@@ -157,10 +160,13 @@ def test_sorted_choices():
 S: Submenu
 X: Exit
 ========================================"""
-    menu = Menu("Menu Title", menu_items=[
-        MenuItem("2", "Item 2"),
-        MenuItem("S", "Submenu"),
-        MenuItem("X", "Exit", is_exit=True),
-        MenuItem("1", "Item 1"),
-    ])
+    menu = Menu(
+        "Menu Title",
+        menu_items=[
+            MenuItem("2", "Item 2"),
+            MenuItem("S", "Submenu"),
+            MenuItem("X", "Exit", is_exit=True),
+            MenuItem("1", "Item 1"),
+        ],
+    )
     assert menu.display() == expected
