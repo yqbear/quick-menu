@@ -11,7 +11,7 @@ requires-python = ">=3.7"
 license = "MIT"
 keywords = []
 authors = [
-  { name = "Stephan Poole (e122785)", email = "yqbear@gmail.com" },
+  { name = "Stephan Poole", email = "yqbear@gmail.com" },
 ]
 classifiers = [
   "Development Status :: 4 - Beta",

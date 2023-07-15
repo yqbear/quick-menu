@@ -5,10 +5,11 @@
 
 -----
 
-**Table of Contents**
+This is a simple package to create text menus for use in console applications.
 
-- [Installation](#installation)
-- [License](#license)
+## Documentation
+
+The [documentation](https://yqbear.github.io/quick-menu) is made with [Material for MkDocs](https://github.com/squidfunk/mkdocs-material) and is hosted by [GitHub Pages](https://docs.github.com/en/pages).
 
 ## Installation
 

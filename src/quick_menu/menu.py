@@ -26,7 +26,7 @@ Example:
         menu.run()
 """
 import os
-from dataclasses import KW_ONLY, dataclass, field
+from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 from typing_extensions import Self
@@ -39,9 +39,6 @@ class MenuItem:
     The menu item can optionally call a function or start a submenu. A menu item can
     also be an exit item which exits the curren menu.
 
-    Note:
-        The `action`, `kwargs`, and `is_exit` parameters are keyword only arguments.
-
     Parameters:
         choice:  The string used to select the menu item.
         label:   The text label displayed for the menu item.
@@ -52,7 +49,6 @@ class MenuItem:
 
     choice: str
     label: str
-    _: KW_ONLY
     action: Optional[Callable[..., None]] = None
     kwargs: dict = field(default_factory=dict)
     is_exit: bool = False
