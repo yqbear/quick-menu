@@ -27,7 +27,7 @@ classifiers = [
 dependencies = ["typing_extensions"]
 
 [project.urls]
-Documentation = "https://github.com/yqbear/quick-menu#readme"
+Documentation = "https://yqbear.github.io/quick-menu"
 Issues = "https://github.com/yqbear/quick-menu/issues"
 Source = "https://github.com/yqbear/quick-menu"
 
