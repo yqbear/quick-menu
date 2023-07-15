@@ -27,9 +27,9 @@ classifiers = [
 dependencies = ["typing_extensions"]
 
 [project.urls]
-Documentation = "https://github.com/unknown/quick-menu#readme"
-Issues = "https://github.com/unknown/quick-menu/issues"
-Source = "https://github.com/unknown/quick-menu"
+Documentation = "https://github.com/yqbear/quick-menu#readme"
+Issues = "https://github.com/yqbear/quick-menu/issues"
+Source = "https://github.com/yqbear/quick-menu"
 
 [tool.hatch.version]
 path = "src/quick_menu/__about__.py"
