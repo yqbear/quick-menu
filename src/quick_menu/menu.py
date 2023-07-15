@@ -27,7 +27,7 @@ Example:
 """
 import os
 from dataclasses import dataclass, field
-from typing import Callable, Optional
+from typing import Callable, Dict, List, Optional
 
 from typing_extensions import Self
 
@@ -73,9 +73,9 @@ class Menu:
     def __init__(
         self,
         title: str,
-        menu_items: list[MenuItem] | None = None,
-        prompt: str | None = None,
-        auto_clear: bool | None = None,
+        menu_items: Optional[List[MenuItem]] = None,
+        prompt: Optional[str] = None,
+        auto_clear: Optional[bool] = None,
     ):
         """Create a new menu.
 
@@ -86,7 +86,7 @@ class Menu:
             auto_clear:  Whether or not to clear the screen before running.
         """
         self.title = title
-        self.menu_items: dict[str, MenuItem] = {}
+        self.menu_items: Dict[str, MenuItem] = {}
         if menu_items:
             for menu_item in menu_items:
                 self.add(menu_item)
@@ -94,7 +94,7 @@ class Menu:
         self.auto_clear = auto_clear if auto_clear else True
 
     def add(self, menu_item: MenuItem) -> Self:
-        """Add a new MenuItem.
+        """Add a new MenuItemq.
 
         Parameters:
             menu_item: A `MenuItem` instance.
