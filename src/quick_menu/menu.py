@@ -104,7 +104,13 @@ class Menu:
 
                     menu.add("1", "First").add("2", "Second")
         """
+        if menu_item.is_exit is True:
+            # Check if there is an existing exit since there can be only one
+            exit_key = self._exit_key()
+            if exit_key:
+                del self.menu_items[exit_key]
         self.menu_items[menu_item.choice.lower()] = menu_item
+        self._ensure_one_exit_exists()
         return self
 
     def display(self) -> str:
@@ -133,6 +139,17 @@ class Menu:
             else:
                 print(f"Invalid choice: {choice}")
                 input("\nPress [Enter] to continue")
+
+    def _exit_key(self) -> Optional[str]:
+        exit_keys = [k for k, v in self.menu_items.items() if v.is_exit is True]
+        if exit_keys:
+            return exit_keys[0]
+        return None
+
+    def _ensure_one_exit_exists(self) -> None:
+        exit_key = self._exit_key()
+        if not exit_key:
+            self.menu_items["x"] = MenuItem("X", "Exit", is_exit=True)
 
     @staticmethod
     def clear() -> None:
