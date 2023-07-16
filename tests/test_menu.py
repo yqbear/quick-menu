@@ -170,3 +170,34 @@ X: Exit
         ],
     )
     assert menu.display() == expected
+
+
+def test_add_exit_option_if_missing():
+    expected = """\
+============== Menu Title ==============
+1: Item 1
+X: Exit
+========================================"""
+    menu = Menu(
+        "Menu Title",
+        menu_items=[
+            MenuItem("1", "Item 1"),
+        ],
+    )
+    assert menu.display() == expected
+
+
+def test_only_one_exit():
+    expected = """\
+============== Menu Title ==============
+1: Item 1
+B: Go back
+========================================"""
+    menu = Menu(
+        "Menu Title",
+        menu_items=[
+            MenuItem("1", "Item 1"),
+            MenuItem("B", "Go back", is_exit=True),
+        ],
+    )
+    assert menu.display() == expected
