@@ -50,7 +50,7 @@ class MenuItem:
         is_exit:      Whether or not this menu item exits the current menu
     """
 
-    VALID_UPDATE_FIELDS: ClassVar[Tuple[str]] = ("label", "action", "action_args")
+    VALID_UPDATE_FIELDS: ClassVar[Tuple[str, ...]] = ("label", "action", "action_args")
 
     choice: str
     label: str
@@ -164,7 +164,7 @@ class Menu:
                 print(f"Invalid choice: {choice}")
                 input("\nPress [Enter] to continue")
 
-    def update(self, choice: str, **kwargs: Optional[dict[str, Any]]) -> None:
+    def update(self, choice: str, **kwargs: Dict[str, Any]) -> None:
         menu_item = self.menu_items.get(choice.lower())
         if menu_item:
             menu_item.update(**kwargs)
