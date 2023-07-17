@@ -9,16 +9,19 @@ Example:
 
         def func1(val=1):
             print("func1: val =", val)
-            input("\\nPress [Enter] to continue")
+            input("Press [Enter] to continue")
 
-        submenu = Menu("Submenu", menu_items=[
-            MenuItem("1", "Do func1", action=func1),
-            MenuItem("X", "Go back", is_exit=True),
-        ])
+        submenu = Menu(
+            "Submenu",
+            menu_items=[
+                MenuItem("1", "Do func1", action=func1),
+                MenuItem("X", "Go back", is_exit=True),
+            ]
+        )
         menu = (
             Menu("Some Title")
             .add(MenuItem("1", "Func1 default", action=func1))
-            .add(MenuItem("2", "Func1 with val", action=func1, kwargs={"val": 4}))
+            .add(MenuItem("2", "Func1 with val", action=func1, action_args={"val": 4}))
             .add(MenuItem("S", "Submenu", action=submenu.run))
             .add(MenuItem("X", "Exit", is_exit=True))
         )
@@ -27,7 +30,7 @@ Example:
 """
 import os
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional
+from typing import Any, Callable, ClassVar, Dict, List, Optional, Tuple
 
 from typing_extensions import Self
 
@@ -40,29 +43,50 @@ class MenuItem:
     also be an exit item which exits the curren menu.
 
     Parameters:
-        choice:  The string used to select the menu item.
-        label:   The text label displayed for the menu item.
-        action:  An optional function to be called when the menu item is selected.
-        kwargs:  Arguments to pass to a menu item action.
-        is_exit: Whether or not this menu item exits the current menu
+        choice:       The string used to select the menu item.
+        label:        The text label displayed for the menu item.
+        action:       An optional function to be called when the menu item is selected.
+        action_args:  Arguments to pass to a menu item action.
+        is_exit:      Whether or not this menu item exits the current menu
     """
+
+    VALID_UPDATE_FIELDS: ClassVar[Tuple[str]] = ("label", "action", "action_args")
 
     choice: str
     label: str
     action: Optional[Callable[..., None]] = None
-    kwargs: dict = field(default_factory=dict)
+    action_args: dict = field(default_factory=dict)
     is_exit: bool = False
 
-    def select(self):
+    def select(self) -> bool:
         """Select the menu item.
 
         This selects the `MenuItem` which runs any associated action with kwargs and
         then returns whether or not selecting this item should tell the current menu to
         exit.
+
+        Returns:
+            True if the item is an exit item; False otherwise
         """
         if self.action:
-            self.action(**self.kwargs)
+            self.action(**self.action_args)
         return not self.is_exit
+
+    def update(self, **kwargs: Dict[str, Any]) -> None:
+        """Update menu item fields.
+
+        Any key matching a field to be updated is replaced with the new vlaue. Any
+        remaining key/value pairs are used to update the `action_args`.
+
+        Paramaters:
+            kwargs: A dict with fields to be updated.
+        """
+        for name in MenuItem.VALID_UPDATE_FIELDS:
+            val = kwargs.pop(name, None)
+            if val:
+                setattr(self, name, val)
+        # Anything else is used to update kwargs
+        self.action_args.update(kwargs)
 
 
 class Menu:
@@ -106,7 +130,7 @@ class Menu:
         """
         if menu_item.is_exit is True:
             # Check if there is an existing exit since there can be only one
-            exit_key = self._exit_key()
+            exit_key = self._exit_choice()
             if exit_key:
                 del self.menu_items[exit_key]
         self.menu_items[menu_item.choice.lower()] = menu_item
@@ -140,14 +164,19 @@ class Menu:
                 print(f"Invalid choice: {choice}")
                 input("\nPress [Enter] to continue")
 
-    def _exit_key(self) -> Optional[str]:
+    def update(self, choice: str, **kwargs: Optional[dict[str, Any]]) -> None:
+        menu_item = self.menu_items.get(choice.lower())
+        if menu_item:
+            menu_item.update(**kwargs)
+
+    def _exit_choice(self) -> Optional[str]:
         exit_keys = [k for k, v in self.menu_items.items() if v.is_exit is True]
         if exit_keys:
             return exit_keys[0]
         return None
 
     def _ensure_one_exit_exists(self) -> None:
-        exit_key = self._exit_key()
+        exit_key = self._exit_choice()
         if not exit_key:
             self.menu_items["x"] = MenuItem("X", "Exit", is_exit=True)
 

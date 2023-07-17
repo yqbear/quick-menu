@@ -23,7 +23,7 @@ def test_menu_item_default():
     assert menu_item.choice == "1"
     assert menu_item.label == "First Item"
     assert menu_item.action is None
-    assert menu_item.kwargs == {}
+    assert menu_item.action_args == {}
     assert menu_item.is_exit is False
 
 
@@ -102,7 +102,7 @@ def test_func_with_kwargs(monkeypatch):
     menu = Menu(
         "Title",
         menu_items=[
-            MenuItem("1", "First item", action=func1, kwargs={"val": 4}),
+            MenuItem("1", "First item", action=func1, action_args={"val": 4}),
             MenuItem("X", "Exit", is_exit=True),
         ],
     )
@@ -201,3 +201,49 @@ B: Go back
         ],
     )
     assert menu.display() == expected
+
+
+def test_update_label(simple_menu):
+    label = "New label"
+    expected = f"""\
+============== Simple Menu =============
+1: {label}
+X: Exit
+========================================"""
+    simple_menu.update("1", label=label)
+    assert simple_menu.display() == expected
+
+
+def test_update_func():
+    def func():
+        pass
+
+    menu_item = MenuItem("1", "Label")
+    menu = Menu("Test").add(menu_item)
+    assert menu_item.action is None
+    menu.update("1", action=func)
+    assert menu_item.action == func
+
+
+def test_update_kwargs():
+    menu_item = MenuItem("1", "Label", action_args={"will_be_removed": 3})
+    menu = Menu("Test").add(menu_item)
+    assert menu_item.action_args == {"will_be_removed": 3}
+    menu.update("1", action_args={"val": 4})
+    assert menu_item.action_args == {"val": 4}
+
+
+def test_update_kwargs_individually():
+    menu_item = MenuItem("1", "Label", action_args={"will_remain": 3})
+    menu = Menu("Test").add(menu_item)
+    assert menu_item.action_args == {"will_remain": 3}
+    menu.update("1", val=4)
+    assert menu_item.action_args == {"will_remain": 3, "val": 4}
+
+
+def test_update_kwargs_individually_with_replace():
+    menu_item = MenuItem("1", "Label", action_args={"will_remain": 3, "val": 3})
+    menu = Menu("Test").add(menu_item)
+    assert menu_item.action_args == {"will_remain": 3, "val": 3}
+    menu.update("1", val=5)
+    assert menu_item.action_args == {"will_remain": 3, "val": 5}
